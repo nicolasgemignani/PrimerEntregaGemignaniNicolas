@@ -1,11 +1,21 @@
-import dotenv from 'dotenv';
-dotenv.config({ path: '.env.development' });
+process.loadEnvFile()
+
+const getEnvVariable = (key, defaultValue) => {
+    const value = process.env[key] || defaultValue
+    if (!value) {
+        throw new Error(`Missing enviroment variable: ${key}`)
+    }
+    return value
+}
 
 export const variables = {
-    PRIVATE_KEY: process.env.PRIVATE_KEY,
-    port: process.env.PORT,
-    MONGO_URL: process.env.MONGO_URL,
-    COOKIEPARSE: process.env.COOKIEPARSE,
-    GMAIL_USER: process.env.GMAIL_USER,
-    GMAIL_PASS: process.env.GMAIL_PASS
+    ENVIROMENT: getEnvVariable('NODE_ENV'),
+    PRIVATE_KEY: getEnvVariable('PRIVATE_KEY'),
+    PORT: getEnvVariable('PORT'),
+    MONGO_URL: getEnvVariable('MONGO_URL'),
+    COOKIEPARSER: getEnvVariable('COOKIEPARSER'),
+    GMAIL_USER: getEnvVariable('GMAIL_USER'),
+    GMAIL_PASS: getEnvVariable('GMAIL_PASS'),
+
+    /* REFRESH_KEY: getEnvVariable('REFRESH_KEY') */
 }

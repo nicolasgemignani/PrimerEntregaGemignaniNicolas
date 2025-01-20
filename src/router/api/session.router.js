@@ -3,8 +3,8 @@ import passport from "passport";
 
 import SessionController from "../../controller/api/session.controller.js";
 
-import { passportCall } from "../../midllewares/passportMiddle.js";
-import { authorization } from "../../midllewares/authorization.js";
+import { passportCall } from "../../jwt/midllewares/jwtMiddles.js";
+import { authorization } from "../../authorization/authorization.js";
 
 const router = Router()
 const sessionController = new SessionController()

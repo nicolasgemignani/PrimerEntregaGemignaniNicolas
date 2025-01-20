@@ -1,7 +1,7 @@
 import express from 'express'
 import ProductController from '../../controller/api/product.controller.js';
-import { passportCall, verifyToken } from '../../midllewares/passportMiddle.js';
-import { authorization } from '../../midllewares/authorization.js';
+import { passportCall, verifyToken } from '../../jwt/midllewares/jwtMiddles.js';
+import { authorization } from '../../authorization/authorization.js';
 
 const router = express.Router()
 const productController = new ProductController()

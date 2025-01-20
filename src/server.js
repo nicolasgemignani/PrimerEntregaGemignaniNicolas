@@ -6,7 +6,7 @@ import passport from 'passport'
 import { initializePassport } from './config/passportConfig.js'
 import connectDB from './config/connect.config.js'
 import appRouter from './router/index.router.js'
-import viewsRouter from './router/view.router.js'
+import viewsRouter from './router/view.index.router.js'
 import { variables } from './config/var.entorno.js'
 
 // Importa modulos para trabajar con URLs y rutas de archivos
@@ -21,7 +21,7 @@ const __dirname = dirname(__filename);
 
 
 const app = express()
-const PORT = variables.port
+const PORT = variables.PORT
 
 // Middleware para procesar cuerpos de las solicitudes en formato JSON y URL-encoded
 app.use(express.json())

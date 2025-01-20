@@ -1,6 +1,6 @@
 import passport from "passport"
 import jwt from 'jsonwebtoken'
-import { variables } from "../config/var.entorno.js";
+import { variables } from "../../config/var.entorno.js";
 
 export const passportCall = (strategy) => {
     return (req, res, next) => {
@@ -22,7 +22,6 @@ export const verifyToken = (req, res, next) => {
     
     if (!token) {
         req.user = null; // No hay token, no hay usuario
-        console.log('No token found, setting req.user to null') // Debug log
         return next() // Pasamos al siguiente middleware
     }
 

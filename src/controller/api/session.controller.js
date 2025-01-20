@@ -1,6 +1,6 @@
 import CurrentUserDTO from "../../dto/current.dto.js";
 import { userService } from "../../service/index.service.js";
-import { generateToken } from "../../utils/jwtToken.js";
+import { generateToken } from "../../jwt/generateJwt.js";
 
 class SessionController {
     constructor(){

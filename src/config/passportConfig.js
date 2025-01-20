@@ -2,7 +2,6 @@ import passport from "passport";
 import jwt from 'passport-jwt'
 import { variables } from "./var.entorno.js";
 
-
 const JWTStrategy = jwt.Strategy
 const ExtractJWT = jwt.ExtractJwt
 

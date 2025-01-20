@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
 import UserController from '../../controller/api/user.controller.js';
-import { passportCall } from '../../midllewares/passportMiddle.js';
-import { authorization } from '../../midllewares/authorization.js';
+import { passportCall } from '../../jwt/midllewares/jwtMiddles.js';
+import { authorization } from '../../authorization/authorization.js';
 
 const router = Router()
 const userController = new UserController();

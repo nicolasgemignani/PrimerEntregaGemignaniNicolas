@@ -1,7 +1,7 @@
 import express from 'express'
 import CartController from '../../controller/api/cart.controller.js';
 
-import { verifyToken } from '../../midllewares/passportMiddle.js'
+import { verifyToken } from '../../jwt/midllewares/jwtMiddles.js'
 
 const router = express.Router()
 const cartController = new CartController()
