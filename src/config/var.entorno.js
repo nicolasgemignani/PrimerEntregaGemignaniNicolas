@@ -17,5 +17,5 @@ export const variables = {
     GMAIL_USER: getEnvVariable('GMAIL_USER'),
     GMAIL_PASS: getEnvVariable('GMAIL_PASS'),
 
-    /* REFRESH_KEY: getEnvVariable('REFRESH_KEY') */
+    REFRESH_KEY: getEnvVariable('REFRESH_KEY')
 }

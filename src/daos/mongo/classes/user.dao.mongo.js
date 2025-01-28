@@ -1,5 +1,6 @@
 import userModel from '../models/user.model.js'
 import cartModel from '../models/cart.model.js'
+import mongoose from 'mongoose';
 
 class UserDaoMongo {
     constructor() {
@@ -68,12 +69,26 @@ class UserDaoMongo {
 
     // Buscar un usuario por filtro
     getOne = async (filter) => await this.userModel.findOne(filter)
+
+
+    get = async (filter) => {
+        if (!mongoose.Types.ObjectId.isValid(filter)) {
+            throw new Error("Invalid ObjectId");
+        }
+        return await this.userModel.findOne({ _id: new mongoose.Types.ObjectId(filter) });
+    };
             
     // Actualizar un usuario por ID
     update = async (filter, updateData) => await this.userModel.findByIdAndUpdate(filter, updateData, { new: true });
             
     // Borrar un usuario por ID
     delete = async (filter) => await this.userModel.findByIdAndDelete(filter)
+
+    // Ejemplo de servicio para actualizar el tokenId
+    updateTokenId = async (userId, tokenId) => {
+        return await this.userModel.findByIdAndUpdate(userId, { tokenId }, { new: true });
+      }
+
 }
 
 export default UserDaoMongo

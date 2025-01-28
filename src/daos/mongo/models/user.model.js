@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'carts',
         default: null // Por defecto, no hay carrito
+    },
+    tokenId: { // Nuevo campo para almacenar el tokenId
+        type: String,
+        default: null, // Inicialmente, no hay tokenId asociado
     }
 }, { timestamps: true });
 
@@ -55,6 +59,12 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (candidatePassword) {
     return await bcrypt.compare(candidatePassword, this.password)
 }
+
+// Método para actualizar el tokenId del usuario
+userSchema.methods.updateTokenId = async function (newTokenId) {
+    this.tokenId = newTokenId;
+    await this.save();
+};
 
 const userModel = mongoose.model(collectionName, userSchema)
 

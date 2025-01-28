@@ -1,6 +1,9 @@
+import jwt from 'jsonwebtoken'
+
 import CurrentUserDTO from "../../dto/current.dto.js";
 import { userService } from "../../service/index.service.js";
-import { generateToken } from "../../jwt/generateJwt.js";
+import { generateTokens } from "../../jwt/generateJwt.js";
+import { variables } from "../../config/var.entorno.js";
 
 class SessionController {
     constructor(){
@@ -32,7 +35,6 @@ class SessionController {
 
     login = async (req, res) => {
         const { email, password } = req.body;
-        
         try {
             const userFound = await userService.getUser({ email })
             if (!userFound) {
@@ -46,19 +48,36 @@ class SessionController {
 
             const cartId = userFound.cart
     
-            const token = generateToken({ 
+            /* const token = generateToken({ 
+                id: userFound._id, 
+                role: userFound.role, 
+                first_name: userFound.first_name, 
+                cart: cartId,
+                email: userFound.email
+            }) */
+
+            const { accessToken, refreshToken } = generateTokens({
                 id: userFound._id, 
                 role: userFound.role, 
                 first_name: userFound.first_name, 
                 cart: cartId,
                 email: userFound.email
             })
-    
-            res.cookie('token', token, {
+
+            /* res.cookie('token', token, {
                 maxAge: 1000 * 60 * 60 * 24,
                 httpOnly: true
-            })
-    
+            }) */
+
+            res.cookie('token', accessToken, {
+                httpOnly: true,
+                secure: false, // Solo en desarrollo
+            });
+            
+            res.cookie('refreshToken', refreshToken, {
+                httpOnly: true,
+                secure: false, // Solo en desarrollo
+            });
             return res.redirect('/products')
         } catch (error) {
             console.error(error); // Log para el seguimiento de errores
@@ -66,8 +85,56 @@ class SessionController {
         }
     }
 
+    refreshToken = async (req, res) => {
+        const refreshToken = req.cookies.refreshToken;
+    
+        if (!refreshToken) {
+            return res.status(401).json({ message: 'Refresh token no proporcionado' });
+        }
+    
+        try {
+            const decoded = jwt.verify(refreshToken, variables.REFRESH_KEY);
+            const { id, first_name, email, role, cart, tokenId } = decoded;
+    
+            // Verificar el tokenId
+            const user = await userService.getUserById(id);
+            if (!user || user.tokenId !== tokenId) {
+                return res.status(403).json({ message: 'Refresh token invalido' });
+            }
+    
+            // Generar nuevos tokens
+            const { accessToken, refreshToken: newRefreshToken } = generateTokens({
+                id, first_name, email, role, cart
+            });
+    
+            // Actualizar el tokenId en la base de datos
+            userService.updateTokenId(id, crypto.randomUUID()); // Generar un nuevo tokenId
+    
+            // Enviar los nuevos tokens
+            res.cookie('token', accessToken, {
+                maxAge: 1000 * 60 * 15, // 15 minutos
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'Strict',
+            });
+    
+            res.cookie('refreshToken', newRefreshToken, {
+                maxAge: 1000 * 60 * 60 * 24 * 7, // 7 días
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+                sameSite: 'Strict',
+            });
+    
+            return res.json({ accessToken });
+        } catch (error) {
+            console.error('Error al refrescar el token', error);
+            return res.status(403).json({ message: 'Refresh token invalido' });
+        }
+    };
+
     logout = async (req, res) => {
         res.clearCookie('token'); // Limpia la cookie del token
+        res.clearCookie('refreshToken') // Limpiar la cookie del refresh token
         res.redirect('/login')
     }
 

@@ -52,6 +52,17 @@ class UserController {
             res.status(500).json({ status: 'error', message: 'Error al eliminar usuario', error: error.message })
         }
     }
+
+    updateTokenId = async (req, res) => {
+        const { userId, tokenId } = req.body; // Asumiendo que userId y tokenId vienen del cuerpo de la solicitud
+        try {
+            await userService.updateTokenId(userId, tokenId); // Llamada al servicio para actualizar el token
+            res.json({ status: 'success', message: 'Token actualizado correctamente' });
+        } catch (error) {
+            console.error('Error actualizando el token:', error);
+            res.status(500).json({ status: 'error', message: 'Error al actualizar el token' });
+        }
+    };
 }
 
 export default UserController

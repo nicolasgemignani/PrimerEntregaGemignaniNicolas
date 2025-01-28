@@ -5,6 +5,7 @@ import productRouter from './api/product.router.js'
 import cartRouter from './api/cart.router.js'
 import userRouter from './api/user.router.js'
 import mockingRouter from './api/mocks.router.js'
+import blacklistRouter from './api/blacklist.router.js'
 
 const router = Router()
 
@@ -22,6 +23,9 @@ router.use('/api/users', userRouter)
 
 // Redirige las solicitudes a '/mockingpets' al enrutador de mocking
 router.use('/mocking', mockingRouter)
+
+//
+router.use('/admin', blacklistRouter)
 
 // Exporta el enrutador para que pueda ser usado en otros modulos
 export default router
