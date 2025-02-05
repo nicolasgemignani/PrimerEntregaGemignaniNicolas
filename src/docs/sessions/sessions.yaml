@@ -1,0 +1,121 @@
+paths:
+  /api/sessions/register:
+    post:
+      summary: Register a new user
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        '200':
+          description: User registered successfully
+        '400':
+          description: Missing email or password
+        '401':
+          description: User already exists
+
+  /api/sessions/login:
+    post:
+      summary: Log in a user
+      tags:
+        - Sessions
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Successful login
+        '404':
+          description: User not found
+        '401':
+          description: Incorrect password
+
+  /api/sessions/refreshToken:
+    post:
+      summary: Refresh access token
+      tags:
+        - Sessions
+      security:
+        - jwtAuth: []  # Define el uso de autenticación JWT
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+        '401':
+          description: Refresh token not provided or unauthorized (Invalid JWT or no token)
+        '403':
+          description: User does not have the required role (admin)
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refreshToken:
+                  type: string
+                  description: The refresh token to use for generating a new access token.
+
+  /api/sessions/logout:
+    post:
+      summary: Log out a user
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User logged out successfully
+
+  /api/sessions/current:
+    get:
+      summary: Get current user data
+      tags:
+        - Sessions
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Returns user data
+        '500':
+          description: Error fetching user data
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Register:
+      type: object
+      properties:
+        first_name:
+          type: string
+        last_name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string

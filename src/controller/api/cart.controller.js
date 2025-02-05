@@ -5,31 +5,13 @@ class CartController {
         this.cartService = cartService
     }
 
-    createCart = async (req, res) => {
-        try {
-            const userId = req.user._id; // Obtener el ID del usuario autenticado
-    
-            // Llamar al método create para crear un nuevo carrito
-            const cart = await cartService.create(userId);
-    
-            // Responde con el ID del nuevo carrito
-            res.json({ cartId: cart._id });
-        } catch (error) {
-            console.error('Error creando el carrito:', error);
-            res.status(500).json({
-                status: 'error',
-                message: 'No se pudo crear el carrito'
-            });
-        }
-    };
-
     getCart = async (req, res) => {
         if (!req.user) {
             return res.status(401).json({ error: 'User not authenticated' });
         }
         
         try {
-            const cart = await cartService.getCart(req.user.id);
+            const cart = await cartService.getCart(req.user.cart);
             res.json({ status: 'success', payload: cart });
         } catch (error) {
             res.status(500).json({ status: 'error', message: 'Error al obtener el carrito', error: error.message });
@@ -53,8 +35,9 @@ class CartController {
         }
 
         try {
-            const { productId, quantity } = req.body;
-            const updatedCart = await this.cartService.addToCart(req.user.id, productId, quantity);
+            const { quantity } = req.body;
+            const productId = req.params.productId
+            const updatedCart = await this.cartService.addProductToCart(req.user.cart, productId, quantity);
             res.json({ status: 'success', payload: updatedCart });
         } catch (error) {
             res.status(500).json({ status: 'error', message: 'Error al agregar producto al carrito', error: error.message });

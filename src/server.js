@@ -2,17 +2,19 @@ import express from 'express'
 import handlebars from 'express-handlebars'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
+import swaggerUiExpress from 'swagger-ui-express'
 
-import { initializePassport } from './config/passportConfig.js'
 import connectDB from './config/connect.config.js'
 import appRouter from './router/index.router.js'
 import viewsRouter from './router/view.index.router.js'
+
+import { initializePassport } from './config/passportConfig.js'
 import { variables } from './config/var.entorno.js'
+import { specs } from './config/swagger/config.swagger.js'
 
 // Importa modulos para trabajar con URLs y rutas de archivos
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-
 
 // Convierte la URL del módulo actual en una ruta de archivo
 const __filename = fileURLToPath(import.meta.url);
@@ -43,6 +45,7 @@ app.use(passport.initialize())
 // Configuracion de las rutas
 app.use(appRouter)
 app.use(viewsRouter)
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(specs, {}))
 
 // Inicia el servidor
 app.listen(PORT, () => {

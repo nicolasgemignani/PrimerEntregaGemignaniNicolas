@@ -4,7 +4,7 @@ class CartRepository {
     }
 
     // Método para crear un nuevo carrito vacío
-    createCart = async (userId) =>  await this.model.create({ user: userId, products: [] });
+    createCart = async (userId) =>  await this.dao.create({ user: userId, products: [] });
             
     // Método para obtener un carrito por su ID
     getCart = async (cartId) => await this.dao.getOne(cartId);

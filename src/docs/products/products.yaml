@@ -1,0 +1,188 @@
+paths:
+  /api/products/:
+    get:
+      summary: Obtiene todos los productos
+      tags:
+        - Products
+      responses:
+        "200":
+          description: Lista de productos obtenida correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+    post:
+      summary: Crea un nuevo producto
+      tags:
+        - Products
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionsProducts'
+      responses:
+        "201":
+          description: Producto creado correctamente
+        "400":
+          description: Error en la solicitud (datos inválidos)
+
+  /api/products/{pid}:
+    get:
+      summary: Obtiene un producto por ID
+      tags:
+        - Products
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Producto encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ActionsProducts'
+        "404":
+          description: Producto no encontrado
+
+    put:
+      summary: Actualiza un producto por ID
+      tags:
+        - Products
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a actualizar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionsProducts'
+      responses:
+        "200":
+          description: Producto actualizado correctamente
+        "400":
+          description: Error en la solicitud (datos inválidos)
+        "401":
+          description: No autenticado (Token inválido o faltante)
+        "403":
+          description: No autorizado (El usuario no tiene permisos para esta acción)
+        "404":
+          description: Producto no encontrado
+
+    delete:
+      summary: Elimina un producto por ID
+      tags:
+        - Products
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: pid
+          in: path
+          required: true
+          description: ID del producto a eliminar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Producto eliminado correctamente
+        "401":
+          description: No autenticado (Token inválido o faltante)
+        "403":
+          description: No autorizado (El usuario no tiene permisos para esta acción)
+        "404":
+          description: Producto no encontrado
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Product:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID autogenerado por MongoDB
+          example: 60d21b4667d0d8992e610c85
+        title:
+          type: string
+          description: Nombre del producto
+          example: Laptop Gamer
+        description:
+          type: string
+          description: Descripción del producto
+          example: Laptop de alto rendimiento para gaming
+        code:
+          type: string
+          description: Código único del producto
+          example: LAPTOP123
+        price:
+          type: number
+          description: Precio del producto
+          example: 1500.99
+        status:
+          type: boolean
+          description: Disponibilidad del producto
+          example: true
+        stock:
+          type: number
+          description: Cantidad disponible en stock
+          example: 25
+        category:
+          type: string
+          description: Categoría del producto
+          example: Electrónica
+        thumbnail:
+          type: string
+          description: URL de la imagen del producto
+          example: https://example.com/image.jpg
+    ActionsProducts:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Nombre del producto
+          example: Laptop Gamer
+        description:
+          type: string
+          description: Descripción del producto
+          example: Laptop de alto rendimiento para gaming
+        code:
+          type: string
+          description: Código único del producto
+          example: LAPTOP123
+        price:
+          type: number
+          description: Precio del producto
+          example: 1500.99
+        status:
+          type: boolean
+          description: Disponibilidad del producto
+          example: true
+        stock:
+          type: number
+          description: Cantidad disponible en stock
+          example: 25
+        category:
+          type: string
+          description: Categoría del producto
+          example: Electrónica
+        thumbnail:
+          type: string
+          description: URL de la imagen del producto
+          example: https://example.com/image.jpg

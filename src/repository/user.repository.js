@@ -13,7 +13,12 @@ class UserRepository {
         return users.map(user => new UserDto(user))
     }
 
-    getUser = async (userId) => await this.dao.getOne(userId)
+    getUser = async (filter) => {
+        if (typeof filter === 'string') {
+            return await this.dao.getOne({ _id: filter }); // Buscar por ID
+        }
+        return await this.dao.getOne(filter); // Buscar por cualquier otro campo (ej. email)
+    };
 
     get = async (userId) => await this.dao.get({ _id: userId });
 

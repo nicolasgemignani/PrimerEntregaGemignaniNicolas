@@ -47,14 +47,6 @@ class SessionController {
             }
 
             const cartId = userFound.cart
-    
-            /* const token = generateToken({ 
-                id: userFound._id, 
-                role: userFound.role, 
-                first_name: userFound.first_name, 
-                cart: cartId,
-                email: userFound.email
-            }) */
 
             const { accessToken, refreshToken } = generateTokens({
                 id: userFound._id, 
@@ -63,11 +55,6 @@ class SessionController {
                 cart: cartId,
                 email: userFound.email
             })
-
-            /* res.cookie('token', token, {
-                maxAge: 1000 * 60 * 60 * 24,
-                httpOnly: true
-            }) */
 
             res.cookie('token', accessToken, {
                 httpOnly: true,
@@ -87,7 +74,6 @@ class SessionController {
 
     refreshToken = async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
-    
         if (!refreshToken) {
             return res.status(401).json({ message: 'Refresh token no proporcionado' });
         }
@@ -97,7 +83,7 @@ class SessionController {
             const { id, first_name, email, role, cart, tokenId } = decoded;
     
             // Verificar el tokenId
-            const user = await userService.getUserById(id);
+            const user = await userService.getUser(id);
             if (!user || user.tokenId !== tokenId) {
                 return res.status(403).json({ message: 'Refresh token invalido' });
             }
@@ -141,7 +127,6 @@ class SessionController {
     current = async (req, res) => {
         try {
             const userDTO = new CurrentUserDTO(req.user)
-            console.log(req.user);
             res.send({ dataUser: userDTO, message: 'datos senscibles' })
         } catch (error) {
             res.status(500).send({ error: 'Error al obtener la información del usuario' });

@@ -17,7 +17,7 @@ router.post('/register', sessionController.registro);
 router.post('/login', sessionController.login);
 
 // Ruta para el refreshToken
-router.post('/refreshToken', sessionController.refreshToken)
+router.post('/refreshToken', passportCall('jwt', { session: false }), authorization('admin'),sessionController.refreshToken)
 
 // Ruta para cerrar sesion
 router.post('/logout', verifyToken, passportCall('jwt', { session: false }), sessionController.logout);

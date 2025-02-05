@@ -1,0 +1,201 @@
+paths:
+  /api/users/:
+    get:
+      summary: Obtiene todos los usuarios
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Los usuarios fueron obtenidos correctamente
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Users'
+        "401":
+          description: No autenticado (Token inválido o faltante)
+        "403":
+          description: No autorizado (El usuario no tiene permisos para esta acción)
+
+    post:
+      summary: Crea un nuevo usuario
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionsUsers'
+      responses:
+        "201":
+          description: Usuario creado exitosamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        "400":
+          description: Datos inválidos
+        "401":
+          description: No autenticado (Token inválido o faltante)
+        "403":
+          description: No autorizado (El usuario no tiene permisos para esta acción)
+
+  /api/users/{uid}:
+    get:
+      summary: Obtiene un usuario por su ID
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ID del usuario a obtener
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Usuario encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        "404":
+          description: Usuario no encontrado
+        "401":
+          description: No autenticado (Token inválido o faltante)
+        "403":
+          description: No autorizado (El usuario no tiene permisos para esta acción)
+
+    put:
+      summary: Actualiza un usuario por su ID
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ID del usuario a actualizar
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ActionsUsers'
+      responses:
+        "200":
+          description: Usuario actualizado correctamente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Users'
+        "400":
+          description: Datos inválidos
+        "404":
+          description: Usuario no encontrado
+        "401":
+          description: No autenticado (Token inválido o faltante)
+        "403":
+          description: No autorizado (El usuario no tiene permisos para esta acción)
+
+    delete:
+      summary: Elimina un usuario por su ID
+      tags:
+        - Users
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: uid
+          in: path
+          required: true
+          description: ID del usuario a eliminar
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Usuario eliminado correctamente
+        "404":
+          description: Usuario no encontrado
+        "401":
+          description: No autenticado (Token inválido o faltante)
+        "403":
+          description: No autorizado (El usuario no tiene permisos para esta acción)
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    Users:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID autogenerado por MongoDB
+          example: 64a7b1c4e1f3c8a1b2d3e4f5
+        first_name:
+          type: string
+          description: Nombre del usuario
+          example: Nicolas
+        last_name:
+          type: string
+          description: Apellido del usuario
+          example: Gemignani
+        email:
+          type: string
+          description: Email del usuario
+          example: nicolasgemignani@outlook.com
+        role:
+          type: string
+          description: Rol del usuario, puede ser 'user' o 'admin'
+          example: admin
+        cart:
+          type: string
+          description: ID del carrito del usuario (referencia al modelo `Carts`)
+          example: 64a7b1c4e1f3c8a1b2d3e4f5
+        tokenId:
+          type: string
+          description: Token único para cada usuario para el manejo de JWT
+          example: f527f94e-0bdb-43c3-8646-8031ac747d4
+
+    ActionsUsers:
+      type: object
+      properties:
+        first_name:
+          type: string
+          description: Nombre del usuario
+          example: Nicolas
+        last_name:
+          type: string
+          description: Apellido del usuario
+          example: Gemignani
+        email:
+          type: string
+          description: Email del usuario
+          example: nicolasgemignani@outlook.com
+        password:
+          type: string
+          description: Contraseña hasheada del usuario
+          example: $2b$10$Zjc731cdfsd#$@1f.ds$@#$#@fdsk43FDSA
+        role:
+          type: string
+          description: Rol del usuario, puede ser 'user' o 'admin'
+          example: admin
+        tokenId:
+          type: string
+          description: Token único para cada usuario para el manejo de JWT
+          example: f527f94e-0bdb-43c3-8646-8031ac747d4

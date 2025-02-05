@@ -7,7 +7,6 @@ class CartDaoMongo {
         this.model = cartModel; // Define el modelo de carrito
     }
 
-
     create = async (userId) => await this.model.create({ user: userId, products: [] });
 
     // Metodo para obtener un carrito por su ID
