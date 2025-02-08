@@ -70,7 +70,6 @@ class UserDaoMongo {
     // Buscar un usuario por filtro
     getOne = async (filter) => await this.userModel.findOne(filter)
 
-
     get = async (filter) => {
         if (!mongoose.Types.ObjectId.isValid(filter)) {
             throw new Error("Invalid ObjectId");

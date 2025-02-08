@@ -56,6 +56,14 @@ class SessionController {
                 email: userFound.email
             })
 
+            req.user = {
+                id: userFound._id,
+                role: userFound.role,
+                first_name: userFound.first_name,
+                cart: cartId,
+                email: userFound.email
+            };
+
             res.cookie('token', accessToken, {
                 httpOnly: true,
                 secure: false, // Solo en desarrollo
